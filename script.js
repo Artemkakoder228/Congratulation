@@ -1,8 +1,8 @@
 // --- НАЛАШТУВАННЯ ---
 let score = 0;
 const maxScore = 100;
-const clickValue = 15;
-const decayRate = 1.5;
+const clickValue = 15; // Скільки додає клік
+const decayRate = 1.5; // Як швидко падає
 let gameActive = true;
 let gameStarted = false;
 
@@ -28,7 +28,7 @@ const letterText = document.getElementById('letter-text');
 // --- ЦИКЛ ГРИ ---
 const gameLoop = setInterval(() => {
     if (!gameActive) return;
-    if (!gameStarted) return; 
+    if (!gameStarted) return; // Шкала стоїть на місці до старту
 
     if (score > 0) {
         score -= decayRate;
@@ -48,13 +48,15 @@ function handleInteraction(e) {
     if (!gameActive) return;
     if (e.type === 'mousedown' && e.cancelable) e.preventDefault();
 
+    // ПЕРШИЙ КЛІК
     if (!gameStarted) {
         gameStarted = true;
-        score = 25; 
+        score = 40; // Стартуємо з 40%, щоб він одразу їхав і не плакав
     }
 
     score += clickValue;
     
+    // Анімація кліку
     dogImg.classList.add('scale-click');
     setTimeout(() => dogImg.classList.remove('scale-click'), 100);
     
@@ -69,6 +71,7 @@ function handleInteraction(e) {
     }
     spawnFlyingItem(clientX, clientY);
     
+    // Перемога
     if (score >= maxScore) {
         score = maxScore;
         winGame();
@@ -76,25 +79,27 @@ function handleInteraction(e) {
     updateUI();
 }
 
+// --- ГОЛОВНА ЛОГІКА КАРТИНОК ---
 function updateUI() {
     progressBar.style.width = score + '%';
 
-    // 1. Старт
+    // 1. ДО СТАРТУ: Тільки облизується (Dog_1)
     if (!gameStarted) {
-        if (!dogImg.src.includes("Dog_1.gif")) dogImg.src = "Dog_1.gif";
+        changeDogImage("Dog_1.gif");
         return;
     }
 
-    // 2. Гра
-    if (score < 30) {
-        // Плаче
-        if (!dogImg.src.includes("Dog_6.gif")) dogImg.src = "Dog_6.gif";
+    // 2. ГРА ПОЧАЛАСЯ:
+    if (score < 25) {
+        // Якщо шкала впала нижче 25% -> ПЛАЧЕ (Dog_6)
+        changeDogImage("Dog_6.gif");
         titleText.innerText = "Швидше! Він плаче! 😭";
         progressBar.style.background = "linear-gradient(90deg, #ff416c, #ff4b2b)";
     } else {
-        // Їде
-        if (!dogImg.src.includes("Dog_3.gif")) dogImg.src = "Dog_3.gif";
+        // У всіх інших випадках (25% - 100%) -> ЇДЕ (Dog_3)
+        changeDogImage("Dog_3.gif");
         
+        // Текст змінюється для драйву
         if (score < 70) {
             titleText.innerText = "Газуй! Йому подобається! 🏎️";
             progressBar.style.background = "linear-gradient(90deg, #f12711, #f5af19)";
@@ -102,6 +107,13 @@ function updateUI() {
             titleText.innerText = "ЩЕ ТРОХИ! ТУРБО РЕЖИМ! 🔥";
             progressBar.style.background = "linear-gradient(90deg, #11998e, #38ef7d)";
         }
+    }
+}
+
+// Допоміжна функція, щоб картинка не блимала при оновленні
+function changeDogImage(imageName) {
+    if (!dogImg.src.includes(imageName)) {
+        dogImg.src = imageName;
     }
 }
 
@@ -126,7 +138,7 @@ function winGame() {
     launchBallConfetti();
 }
 
-// --- ЛОГІКА ПОДАРУНКА ---
+// --- ПОДАРУНКИ ---
 getGiftBtn.addEventListener('click', () => {
     preGiftContent.style.display = 'none';
     giftBox.style.display = 'inline-block';
@@ -143,7 +155,7 @@ openLetterBtn.addEventListener('click', () => {
     letterForm.style.display = 'block';
 });
 
-// --- ВІДПРАВКА ЛИСТА (ВЖЕ З ТВОЇМИ КЛЮЧАМИ) ---
+// --- ВІДПРАВКА ЛИСТА ---
 sendLetterBtn.addEventListener('click', () => {
     const text = letterText.value;
     if (text.trim() === "") {
@@ -154,9 +166,9 @@ sendLetterBtn.addEventListener('click', () => {
     sendLetterBtn.innerText = "Відправка...";
     sendLetterBtn.style.background = "#bdc3c7";
 
-    // Твої ключі
-    const serviceID = "service_jjysm7r";
-    const templateID = "template_cnx29ub";
+    // !!! ВСТАВ СЮДИ СВОЇ ID З EMAILJS !!!
+    const serviceID = "service_jjysm7r";   // Твій Service ID
+    const templateID = "template_cnx29ub"; // Твій Template ID
 
     const templateParams = {
         message: text,
@@ -173,7 +185,7 @@ sendLetterBtn.addEventListener('click', () => {
             sendLetterBtn.innerText = "Помилка 😔";
             sendLetterBtn.style.background = "red";
             console.log(err);
-            alert("Помилка відправки. Перевір консоль (F12).");
+            alert("Помилка відправки. Перевір консоль.");
         });
 });
 
