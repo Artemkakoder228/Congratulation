@@ -1,8 +1,8 @@
 // --- НАЛАШТУВАННЯ ---
 let score = 0;
 const maxScore = 100;
-const clickValue = 15; // Скільки додає клік
-const decayRate = 1.5; // Як швидко падає
+const clickValue = 15;
+const decayRate = 1.5;
 let gameActive = true;
 let gameStarted = false;
 
@@ -28,7 +28,7 @@ const letterText = document.getElementById('letter-text');
 // --- ЦИКЛ ГРИ ---
 const gameLoop = setInterval(() => {
     if (!gameActive) return;
-    if (!gameStarted) return; // Шкала стоїть на місці до старту
+    if (!gameStarted) return;
 
     if (score > 0) {
         score -= decayRate;
@@ -51,16 +51,16 @@ function handleInteraction(e) {
     // ПЕРШИЙ КЛІК
     if (!gameStarted) {
         gameStarted = true;
-        score = 40; // Стартуємо з 40%, щоб він одразу їхав і не плакав
+        // Стартуємо з 40%. Оскільки поріг плачу тепер 50%,
+        // він може майже одразу заплакати, якщо не клікати швидко.
+        score = 40; 
     }
 
     score += clickValue;
     
-    // Анімація кліку
     dogImg.classList.add('scale-click');
     setTimeout(() => dogImg.classList.remove('scale-click'), 100);
     
-    // Смаколики
     let clientX, clientY;
     if (e.type === 'touchstart') {
         clientX = e.touches[0].clientX;
@@ -71,7 +71,6 @@ function handleInteraction(e) {
     }
     spawnFlyingItem(clientX, clientY);
     
-    // Перемога
     if (score >= maxScore) {
         score = maxScore;
         winGame();
@@ -83,24 +82,24 @@ function handleInteraction(e) {
 function updateUI() {
     progressBar.style.width = score + '%';
 
-    // 1. ДО СТАРТУ: Тільки облизується (Dog_1)
+    // 1. ДО СТАРТУ
     if (!gameStarted) {
         changeDogImage("Dog_1.gif");
         return;
     }
 
     // 2. ГРА ПОЧАЛАСЯ:
-    if (score < 25) {
-        // Якщо шкала впала нижче 25% -> ПЛАЧЕ (Dog_6)
+    // !!! ЗМІНА ТУТ: Поріг піднято з 25 до 50 !!!
+    if (score < 50) {
+        // Якщо шкала нижче половини -> ПЛАЧЕ (Dog_6)
         changeDogImage("Dog_6.gif");
         titleText.innerText = "Швидше! Він плаче! 😭";
         progressBar.style.background = "linear-gradient(90deg, #ff416c, #ff4b2b)";
     } else {
-        // У всіх інших випадках (25% - 100%) -> ЇДЕ (Dog_3)
+        // Якщо вище половини -> ЇДЕ (Dog_3)
         changeDogImage("Dog_3.gif");
         
-        // Текст змінюється для драйву
-        if (score < 70) {
+        if (score < 75) {
             titleText.innerText = "Газуй! Йому подобається! 🏎️";
             progressBar.style.background = "linear-gradient(90deg, #f12711, #f5af19)";
         } else {
@@ -110,7 +109,7 @@ function updateUI() {
     }
 }
 
-// Допоміжна функція, щоб картинка не блимала при оновленні
+// Допоміжна функція
 function changeDogImage(imageName) {
     if (!dogImg.src.includes(imageName)) {
         dogImg.src = imageName;
@@ -138,7 +137,7 @@ function winGame() {
     launchBallConfetti();
 }
 
-// --- ПОДАРУНКИ ---
+// --- ПОДАРУНКИ ТА ЛИСТ ---
 getGiftBtn.addEventListener('click', () => {
     preGiftContent.style.display = 'none';
     giftBox.style.display = 'inline-block';
@@ -155,7 +154,6 @@ openLetterBtn.addEventListener('click', () => {
     letterForm.style.display = 'block';
 });
 
-// --- ВІДПРАВКА ЛИСТА ---
 sendLetterBtn.addEventListener('click', () => {
     const text = letterText.value;
     if (text.trim() === "") {
@@ -166,9 +164,9 @@ sendLetterBtn.addEventListener('click', () => {
     sendLetterBtn.innerText = "Відправка...";
     sendLetterBtn.style.background = "#bdc3c7";
 
-    // !!! ВСТАВ СЮДИ СВОЇ ID З EMAILJS !!!
-    const serviceID = "service_jjysm7r";   // Твій Service ID
-    const templateID = "template_cnx29ub"; // Твій Template ID
+    // Твої ID
+    const serviceID = "service_jjysm7r";
+    const templateID = "template_cnx29ub";
 
     const templateParams = {
         message: text,
