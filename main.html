@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Миколай і Песик</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div id="game-area">
+            <div class="title-wrapper">
+                <h1 id="title-text">Він голодний! Тисни! 🥺</h1>
+            </div>
+            
+            <img src="Dog_1.gif" alt="Собачка" class="styled-gif" id="dog">
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+
+            <button class="btn" id="feed-btn">ГОДУВАТИ! 🍪</button>
+        </div>
+
+        <div id="win-area" style="display: none;">
+            
+            <div id="pre-gift-content">
+                <h2 class="win-title">✨ Ти впоралася! ✨</h2>
+                <p class="win-text">Песик наївся! Ось сюрприз:</p>
+                <img src="Dog_5.gif" alt="Собачка" class="styled-gif">
+                <button class="btn-gift" id="get-gift-btn">Отримати подарунок 🎁</button>
+            </div>
+
+            <div id="gift-box" class="gift-box" style="display: none;">
+                🎁
+            </div>
+
+            <div id="final-reveal" style="display: none;">
+                <img src="Dog_4.gif" alt="Funny Gift" class="styled-gif">
+                
+                <p class="fancy-title">Споті вітає зі святом!!!</p>
+                
+                <div id="envelope-wrapper">
+                    <div class="envelope-btn" id="open-letter-btn">✉️</div>
+                    <span class="envelope-text">Натисни, щоб прочитати</span>
+                </div>
+
+                <div class="letter-container" id="letter-form" style="display: none;">
+                    <h3>✉️ Лист Миколаю</h3>
+                    <textarea id="letter-text" placeholder="Напиши бажання..."></textarea>
+                    <button class="btn-send" id="send-letter-btn">Відправити ✨</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
